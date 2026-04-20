@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Personal Growth Quest</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #f4f1df, #f9f7ee);
+      color: #333;
+      min-height: 100vh;
+      padding: 30px 20px;
+    }
+
+    .app {
+      max-width: 950px;
+      margin: auto;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+      overflow: hidden;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #4a90e2, #6a5acd);
+      color: white;
+      padding: 35px 25px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      max-width: 700px;
+      margin: auto;
+      line-height: 1.7;
+    }
+
+    .content {
+      padding: 30px 25px 35px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .stat-box {
+      background: #f7f9ff;
+      border-radius: 14px;
+      padding: 15px;
+      border-left: 6px solid #6a5acd;
+    }
+
+    .stat-box h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: #4b3fb8;
+    }
+
+    .progress-wrap {
+      margin-bottom: 22px;
+    }
+
+    .progress-label {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 16px;
+      background: #e4e7f5;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #4a90e2, #6a5acd);
+      transition: width 0.4s ease;
+    }
+
+    .card {
+      background: #fcfcff;
+      border: 1px solid #e7e8f4;
+      border-radius: 18px;
+      padding: 24px;
+      margin-bottom: 20px;
+      min-height: 250px;
+    }
+
+    .question-number {
+      color: #6a5acd;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .scenario {
+      font-size: 1.2rem;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .choices {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .choice-btn,
+    .main-btn,
+    .secondary-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.25s ease;
+    }
+
+    .choice-btn {
+      text-align: left;
+      background: #eef3ff;
+      color: #333;
+      border: 2px solid transparent;
+    }
+
+    .choice-btn:hover {
+      transform: translateY(-2px);
+      background: #e1e9ff;
+      border-color: #6a5acd;
+    }
+
+    .main-btn {
+      background: #6a5acd;
+      color: white;
+      margin-right: 10px;
+    }
+
+    .main-btn:hover {
+      background: #5443c7;
+    }
+
+    .secondary-btn {
+      background: #e9ecf8;
+      color: #333;
+    }
+
+    .secondary-btn:hover {
+      background: #dfe4f5;
+    }
+
+    .result-box {
+      background: #f8fbff;
+      border-left: 6px solid #4a90e2;
+      border-radius: 16px;
+      padding: 22px;
+      line-height: 1.8;
+    }
+
+    .result-box h2 {
+      color: #4b3fb8;
+      margin-bottom: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .footer-actions {
+      margin-top: 20px;
+    }
+
+    .scratch-link {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .scratch-link a {
+      color: #4a55d4;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .scratch-link a:hover {
+      text-decoration: underline;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #efe8ff;
+      color: #5b42c4;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    @media (max-width: 600px) {
+      .hero h1 {
+        font-size: 1.8rem;
+      }
+
+      .content {
+        padding: 20px 16px 26px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="hero">
+      <h1>Personal Growth Quest</h1>
+      <p>
+        This interactive app is inspired by self-help books and my personal journey.
+        Make choices through real-life situations and discover your growth style,
+        your score, and the book that matches you best.
+      </p>
+    </div>
+
+    <div class="content">
+      <div class="stats">
+        <div class="stat-box">
+          <h3>Growth Score</h3>
+          <p><span id="score">0</span> points</p>
+        </div>
+        <div class="stat-box">
+          <h3>Question</h3>
+          <p><span id="currentStep">1</span> / <span id="totalSteps">5</span></p>
+        </div>
+        <div class="stat-box">
+          <h3>Best Score</h3>
+          <p><span id="bestScore">0</span> points</p>
+        </div>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-label">Progress</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="card" id="gameCard">
+        <div class="question-number" id="questionNumber">Scenario 1</div>
+        <div class="scenario" id="scenarioText"></div>
+        <div class="choices" id="choicesBox"></div>
+      </div>
+
+      <div class="card hidden" id="resultCard">
+        <div class="result-box">
+          <div class="badge" id="badgeText">Growth Style</div>
+          <h2 id="resultTitle">Your Result</h2>
+          <p id="resultDescription"></p>
+          <p><strong>Recommended Book:</strong> <span id="bookMatch"></span></p>
+          <p><strong>Your Final Score:</strong> <span id="finalScore"></span></p>
+
+          <div class="footer-actions">
+            <button class="main-btn" onclick="restartGame()">Play Again</button>
+            <button class="secondary-btn" onclick="showAdvice()">Show Growth Advice</button>
+          </div>
+
+          <p id="adviceText" style="margin-top: 16px;"></p>
+        </div>
+      </div>
+
+      <div class="scratch-link">
+        <a href="ScratchPage.html"> Return</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        scenario: "You feel overwhelmed with school, responsibilities, and being far from home. What do you do first?",
+        choices: [
+          { text: "Write everything down and make a small plan.", score: 5, type: "habits" },
+          { text: "Take a break and remind yourself that you can handle hard things.", score: 4, type: "mindset" },
+          { text: "Talk to someone you trust for support.", score: 3, type: "balance" },
+          { text: "Ignore everything and hope the stress goes away.", score: 1, type: "avoidance" }
+        ]
+      },
+      {
+        scenario: "You catch yourself doomscrolling instead of doing something meaningful. What do you choose?",
+        choices: [
+          { text: "Put the phone away and read 10 pages of a book.", score: 5, type: "habits" },
+          { text: "Set a timer and replace scrolling with journaling.", score: 4, type: "mindset" },
+          { text: "Take a walk to reset your energy.", score: 3, type: "balance" },
+          { text: "Keep scrolling because it feels easier.", score: 1, type: "avoidance" }
+        ]
+      },
+      {
+        scenario: "You want to speak up more in class or in a new environment, but you feel nervous. What do you do?",
+        choices: [
+          { text: "Challenge yourself to speak once, even if it feels scary.", score: 5, type: "confidence" },
+          { text: "Prepare what you want to say ahead of time.", score: 4, type: "habits" },
+          { text: "Wait until you feel completely ready.", score: 2, type: "avoidance" },
+          { text: "Remind yourself that growth starts outside your comfort zone.", score: 5, type: "mindset" }
+        ]
+      },
+      {
+        scenario: "A bad day makes you question your progress. What mindset do you choose?",
+        choices: [
+          { text: "One hard day does not erase all my growth.", score: 5, type: "mindset" },
+          { text: "I can learn something from this and keep going.", score: 4, type: "purpose" },
+          { text: "I need rest, then I will try again tomorrow.", score: 3, type: "balance" },
+          { text: "Maybe I am just not good enough.", score: 1, type: "avoidance" }
+        ]
+      },
+      {
+        scenario: "You want your life to improve, but you know growth takes consistency. What do you focus on?",
+        choices: [
+          { text: "Small daily habits that build a better future.", score: 5, type: "habits" },
+          { text: "Changing the way I think about failure.", score: 5, type: "mindset" },
+          { text: "Building inner peace and purpose.", score: 4, type: "purpose" },
+          { text: "Waiting for motivation before I begin.", score: 1, type: "avoidance" }
+        ]
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let types = {
+      habits: 0,
+      mindset: 0,
+      confidence: 0,
+      purpose: 0,
+      balance: 0,
+      avoidance: 0
+    };
+
+    const scenarioText = document.getElementById("scenarioText");
+    const choicesBox = document.getElementById("choicesBox");
+    const questionNumber = document.getElementById("questionNumber");
+    const scoreText = document.getElementById("score");
+    const currentStep = document.getElementById("currentStep");
+    const totalSteps = document.getElementById("totalSteps");
+    const progressFill = document.getElementById("progressFill");
+    const bestScoreText = document.getElementById("bestScore");
+
+    const gameCard = document.getElementById("gameCard");
+    const resultCard = document.getElementById("resultCard");
+    const badgeText = document.getElementById("badgeText");
+    const resultTitle = document.getElementById("resultTitle");
+    const resultDescription = document.getElementById("resultDescription");
+    const bookMatch = document.getElementById("bookMatch");
+    const finalScore = document.getElementById("finalScore");
+    const adviceText = document.getElementById("adviceText");
+
+    totalSteps.textContent = questions.length;
+
+    function loadBestScore() {
+      const best = localStorage.getItem("growthQuestBest") || 0;
+      bestScoreText.textContent = best;
+    }
+
+    function updateProgress() {
+      currentStep.textContent = Math.min(currentQuestion + 1, questions.length);
+      const percent = (currentQuestion / questions.length) * 100;
+      progressFill.style.width = percent + "%";
+    }
+
+    function showQuestion() {
+      updateProgress();
+
+      const q = questions[currentQuestion];
+      questionNumber.textContent = "Scenario " + (currentQuestion + 1);
+      scenarioText.textContent = q.scenario;
+      choicesBox.innerHTML = "";
+
+      q.choices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.className = "choice-btn";
+        btn.textContent = choice.text;
+        btn.onclick = () => selectChoice(choice);
+        choicesBox.appendChild(btn);
+      });
+    }
+
+    function selectChoice(choice) {
+      score += choice.score;
+      types[choice.type] += 1;
+      scoreText.textContent = score;
+
+      currentQuestion++;
+
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      } else {
+        finishGame();
+      }
+    }
+
+    function getTopType() {
+      let maxType = "mindset";
+      let maxValue = -1;
+
+      for (const key in types) {
+        if (types[key] > maxValue) {
+          maxValue = types[key];
+          maxType = key;
+        }
+      }
+
+      return maxType;
+    }
+
+    function finishGame() {
+      progressFill.style.width = "100%";
+      gameCard.classList.add("hidden");
+      resultCard.classList.remove("hidden");
+
+      const topType = getTopType();
+
+      let title = "";
+      let description = "";
+      let book = "";
+      let badge = "";
+
+      if (topType === "habits") {
+        badge = "Habit Builder";
+        title = "You grow through discipline and consistency";
+        description = "You believe in small steps, structure, and building a better life through daily actions. You understand that big change often starts with simple routines.";
+        book = "Atomic Habits";
+      } else if (topType === "mindset") {
+        badge = "Mindset Shifter";
+        title = "You grow through perspective and resilience";
+        description = "You focus on the way you think, the stories you tell yourself, and your ability to keep going even when life feels difficult.";
+        book = "Mindset: The New Psychology of Success";
+      } else if (topType === "confidence") {
+        badge = "Courage Builder";
+        title = "You grow by facing discomfort bravely";
+        description = "You become stronger when you challenge fear, speak up, and trust yourself in unfamiliar situations.";
+        book = "The 7 Habits of Highly Effective People";
+      } else if (topType === "purpose") {
+        badge = "Soul Seeker";
+        title = "You grow through reflection and deeper meaning";
+        description = "You are drawn to purpose, inner peace, and understanding who you are becoming beneath the surface.";
+        book = "The Seat of the Soul";
+      } else if (topType === "balance") {
+        badge = "Balanced Grower";
+        title = "You grow by caring for both your mind and your well-being";
+        description = "You value reflection, rest, support, and healthy emotional choices as part of personal growth.";
+        book = "The Four Agreements";
+      } else {
+        badge = "Fresh Start";
+        title = "Your next chapter begins with one better choice";
+        description = "Growth does not require perfection. It begins the moment you choose a healthier habit, a better mindset, or a more honest action.";
+        book = "Atomic Habits";
+      }
+
+      badgeText.textContent = badge;
+      resultTitle.textContent = title;
+      resultDescription.textContent = description;
+      bookMatch.textContent = book;
+      finalScore.textContent = score + " points";
+
+      const best = Number(localStorage.getItem("growthQuestBest") || 0);
+      if (score > best) {
+        localStorage.setItem("growthQuestBest", score);
+        bestScoreText.textContent = score;
+      }
+    }
+
+    function showAdvice() {
+      adviceText.textContent =
+        "Growth advice: choose one small habit this week, limit distractions for 10 minutes a day, and remind yourself that progress matters more than perfection.";
+    }
+
+    function restartGame() {
+      currentQuestion = 0;
+      score = 0;
+      types = {
+        habits: 0,
+        mindset: 0,
+        confidence: 0,
+        purpose: 0,
+        balance: 0,
+        avoidance: 0
+      };
+
+      scoreText.textContent = "0";
+      adviceText.textContent = "";
+      gameCard.classList.remove("hidden");
+      resultCard.classList.add("hidden");
+      showQuestion();
+    }
+
+    loadBestScore();
+    showQuestion();
+  </script>
+</body>
+</html>
